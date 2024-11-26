@@ -5,15 +5,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Expenses</title>
-  <link rel="stylesheet" href="/public/css/output.css">
-  <link rel="icon" type="image/x-icon" href="/public/img/money.png">
+  <link rel="stylesheet" href="css/output.css">
+  <link rel="icon" type="image/x-icon" href="img/money.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
     integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap"
+    rel="stylesheet">
 </head>
 
-<body class="bg-[#E6EDF3] text-white">
-  
+<body class="bg-[#E6EDF3] text-white font-IPST">
+
   <div class="container mx-auto px-4 sm:p-0">
     <div class="flex justify-center items-center min-h-screen py-4">
       <div class="text-center p-6 bg-white rounded-lg shadow-xl space-y-6 w-full max-w-lg">
@@ -27,10 +31,7 @@
             <div id="product-alert"
               class="hidden mt-2 font-semibold py-3 px-4 bg-red-100 text-red-800 rounded-lg shadow-lg flex items-centet justify-between space-x-3">
               <span class="text-base">กรุณาใส่ชื่อสินค้า</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="cursor-pointer h-6 w-6 text-red-600" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
+              <i class="fa-solid fa-xmark"></i>
             </div>
           </div>
 
@@ -42,10 +43,7 @@
             <div id="price-alert"
               class="hidden mt-2 font-semibold py-3 px-4 bg-red-100 text-red-800 rounded-lg shadow-lg flex items-center justify-between space-x-3">
               <span class="text-base">กรุณาใส่ราคาสินค้า</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="cursor-pointer h-6 w-6 text-red-600" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
+              <i class="fa-solid fa-xmark"></i>
             </div>
           </div>
 
@@ -68,7 +66,6 @@
           </div>
         </div>
 
-
         <div id="info-container" class="mt-6 text-left text-gray-800">
           <div class="space-y-4">
             <!-- From js -->
@@ -90,10 +87,7 @@
               <div id="edit-product-alert"
                 class="hidden mt-2 font-semibold py-3 px-4 bg-red-100 text-red-800 rounded-lg shadow-lg flex items-center justify-between space-x-3">
                 <span class="text-base">กรุณาใส่ชื่อสินค้า</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="cursor-pointer h-6 w-6 text-red-600" fill="none"
-                  viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
+                <i class="fa-solid fa-xmark"></i>
               </div>
             </div>
             <div>
@@ -103,10 +97,7 @@
               <div id="edit-price-alert"
                 class="hidden mt-2 font-semibold py-3 px-4 bg-red-100 text-red-800 rounded-lg shadow-lg flex items-center justify-between space-x-3">
                 <span class="text-base">กรุณาใส่ราคาสินค้า</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="cursor-pointer h-6 w-6 text-red-600" fill="none"
-                  viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
+                <i class="fa-solid fa-xmark"></i>
               </div>
             </div>
             <div class="mt-4">
@@ -137,7 +128,7 @@
     <!-- From js -->
   </div>
 
-  <script src="/public/js/script.js"></script>
+  <script src="js/script.js"></script>
 </body>
 
 </html>

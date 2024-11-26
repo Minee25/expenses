@@ -5,11 +5,11 @@ document.getElementById("add").addEventListener("click", () => {
   addProduct();
 });
 
-document.querySelector("#product-alert svg").addEventListener("click", () => {
+document.querySelector("#product-alert i").addEventListener("click", () => {
   document.getElementById("product-alert").classList.add("hidden");
 });
 
-document.querySelector("#price-alert svg").addEventListener("click", () => {
+document.querySelector("#price-alert i").addEventListener("click", () => {
   document.getElementById("price-alert").classList.add("hidden");
 });
 
