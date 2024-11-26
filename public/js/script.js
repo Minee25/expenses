@@ -101,10 +101,7 @@ function infoContainer() {
           <i class="fa-solid fa-pen-to-square text-xl"></i>
         </button>
         <button class="delete-btn text-red-500 hover:text-red-700 transition-colors duration-300" data-index="${index}">
-          <svg xmlns="http://www.w3.org/2000/svg" class="cursor-pointer h-7 w-7 text-red-600" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
+          <i class="fa-solid fa-xmark text-xl cursor-pointer"></i>
         </button>
       </div>
     </div>
@@ -260,9 +257,7 @@ function showToast(message, type = 'success') {
   const closeButton = document.createElement('button');
   closeButton.classList.add('close-toast', 'text-white', 'hover:text-gray-200', 'focus:outline-none');
   closeButton.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-      <path fill-rule="evenodd" d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414L11.414 10l2.293 2.293a1 1 0 01-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-    </svg>
+    <i class="fa-solid fa-xmark text-xl cursor-pointer"></i>
   `;
   closeButton.onclick = () => {
     toastItem.classList.add('opacity-0', 'translate-x-full');
