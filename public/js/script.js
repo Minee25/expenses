@@ -17,7 +17,6 @@ document.querySelector("#price-alert i").addEventListener("click", () => {
 document.getElementById("submit").addEventListener("click", () => {
   if (!infoProduct.length <= 0) {
     send();
-    showToast('บันทึกข้อมูลแล้ว', 'info');
   }
 });
 
@@ -68,7 +67,7 @@ function addProduct() {
     priceProduct: priceProductEl,
     note: noteEl
   });
-  showToast('เพิ่มข้อมูลแล้ว', 'success');
+  showToast('เพิ่มข้อมูลรายจ่ายแล้ว', 'success');
   disabledSubmitBtn();
   localStorage.setItem("infoProduct", JSON.stringify(infoProduct));
   document.getElementById("product").value = "";
@@ -159,6 +158,7 @@ function showEditPopup(index) {
       note: updatedNote
     };
 
+    localStorage.setItem("infoProduct", JSON.stringify(infoProduct));
     popup.classList.add('hidden');
     infoContainer();
   };
@@ -178,15 +178,18 @@ function deleteProduct(index) {
 
 // Webhook  
 function send() {
-  const webhookUrl = "https://script.google.com/macros/s/AKfycbzUEJBvzE_o04mFDlef_Y7mNkByUwG98aTkc2bDk1BJVkyyjCtmp5k1QnnoOGWMBA6KSQ/exec";
+  const webhookUrl = "https://script.google.com/macros/s/AKfycbwz9CrrndFTu64Hvhd26d5woPZojAOrgPCgFYElh1u_krWAUdaskTjyrpdU1csgOnKYGA/exec";
+  const codeBalance = `=INDIRECT("F" & ROW()-1) - INDIRECT("C" & ROW())`;
 
   if (infoProduct.length > 0) {
+    // เตรียมข้อมูลสำหรับการส่ง
     infoProduct.forEach(item => {
       const payload = JSON.stringify({
         date: item.date,
         productName: item.productName,
         priceProduct: item.priceProduct,
-        note: item.note
+        note: item.note,
+        codeBalance: codeBalance
       });
 
       fetch(webhookUrl, {
@@ -199,17 +202,22 @@ function send() {
       })
         .then(() => {
           console.log('Data sent successfully!');
+          showToast('บันทึกข้อมูลรายจ่ายเสร็จสิ้น', 'info');
         })
-        .catch((error) => {
-          console.error('Error:', error);
+        .catch(error => {
+          console.error('Error sending data:', error);
+          showToast('เกิดข้อผิดพลาดในการส่งข้อมูล', 'error');
         });
     });
 
-    // เคลียร์ infoProduct หลังจากส่งข้อมูล
+    // แสดงข้อความกำลังบันทึก
+    showToast('กำลังบันทึกข้อมูลรายจ่าย', 'warning');
     infoProduct = [];
     localStorage.removeItem('infoProduct');
     infoContainer();
     disabledSubmitBtn();
+  } else {
+    showToast('ไม่มีข้อมูลที่ต้องส่ง', 'info');
   }
 }
 
@@ -246,6 +254,9 @@ function showToast(message, type = 'success') {
     case 'info':
       toastItem.classList.add('bg-blue-500');
       break;
+    case 'warning':
+      toastItem.classList.add('bg-yellow-500');
+      break;
   }
 
   const messageElement = document.createElement('span');
@@ -281,3 +292,165 @@ function showToast(message, type = 'success') {
     }, 300);
   }, 4000);
 }
+
+// toggle
+
+let selected = localStorage.getItem('selected') === 'true';
+
+// ค้นหาปุ่มที่ใช้เลือกแท็บ
+const expensesTab = document.getElementById('expensesTab');
+const incomeTab = document.getElementById('incomeTab');
+
+// ฟังก์ชันเพื่อปรับตำแหน่งของ indicator
+function updateIndicator() {
+  const indicator = document.getElementById('indicator');
+  if (selected) {
+    indicator.classList.remove('left-1/2', '-ml-1', 'text-green-500');
+    indicator.classList.add('left-1', 'text-blue-500', 'font-semibold');
+    indicator.textContent = 'รายจ่าย';
+  } else {
+    indicator.classList.remove('left-1', 'text-blue-500', 'font-semibold');
+    indicator.classList.add('left-1/2', '-ml-1', 'text-green-500');
+    indicator.textContent = 'รายรับ';
+  }
+}
+
+// ตั้งค่า event listeners ให้กับแท็บ
+expensesTab.addEventListener('click', function () {
+  selected = true;
+  updateIndicator();
+});
+
+incomeTab.addEventListener('click', function () {
+  selected = false;
+  updateIndicator();
+});
+
+updateIndicator();
+
+// Update form display function
+function updateFormDisplay() {
+  const expensesForm = document.getElementById('expenses-form');
+  const incomeForm = document.getElementById('income-form');
+
+  if (selected) {
+    expensesForm.style.display = 'block';
+    incomeForm.style.display = 'none';
+  } else {
+    expensesForm.style.display = 'none';
+    incomeForm.style.display = 'block';
+  }
+}
+
+// Event listeners for tabs
+expensesTab.addEventListener('click', function () {
+  selected = true;
+  localStorage.setItem('selected', selected);
+  updateIndicator();
+  updateFormDisplay();
+});
+
+incomeTab.addEventListener('click', function () {
+  selected = false;
+  localStorage.setItem('selected', selected);
+  updateIndicator();
+  updateFormDisplay();
+});
+
+updateIndicator();
+updateFormDisplay();
+
+// Submit receive form
+document.getElementById("submit-receive").addEventListener("click", () => {
+  const receiverName = document.getElementById("itemName").value.trim();
+  const amount = document.getElementById("amount").value.trim();
+  const description = document.getElementById("description").value.trim();
+
+  if (!validateForm(receiverName, amount)) {
+    return;
+  }
+
+  let today = new Date();
+  let formattedDate = (today.getDate().toString().padStart(2, '0')) + '/' +
+    (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
+    today.getFullYear();
+  // Save the received data
+  const receivedData = {
+    date: formattedDate,
+    itemName: receiverName,
+    amount: parseFloat(amount),
+    description: description
+  };
+
+  // Store this data in localStorage
+  let receivedProducts = JSON.parse(localStorage.getItem("receivedProducts")) || [];
+  receivedProducts.push(receivedData);
+  localStorage.setItem("receivedProducts", JSON.stringify(receivedProducts));
+
+  // Clear the form
+  document.getElementById("itemName").value = "";
+  document.getElementById("amount").value = "";
+  document.getElementById("description").value = "";
+
+  // Send income data
+  sendIncome(receivedData);
+});
+
+function validateForm(receiverName, amount) {
+  if (receiverName === "") {
+    document.getElementById("receiver-alert").classList.remove("hidden");
+    document.getElementById("itemName").focus();
+    return false;
+  } else {
+    document.getElementById("receiver-alert").classList.add("hidden");
+  }
+
+  if (amount === "" || isNaN(amount) || amount <= 0) {
+    document.getElementById("amount-alert").classList.remove("hidden");
+    document.getElementById("amount").focus();
+    return false;
+  } else {
+    document.getElementById("amount-alert").classList.add("hidden");
+  }
+
+  return true;
+}
+
+function sendIncome(receivedData) {
+  const webhookUrl = "https://script.google.com/macros/s/AKfycbwz9CrrndFTu64Hvhd26d5woPZojAOrgPCgFYElh1u_krWAUdaskTjyrpdU1csgOnKYGA/exec";
+  const codeBalance = `=INDIRECT("F" & ROW()-1) + INDIRECT("D" & ROW())`;
+  const payload = JSON.stringify({
+    date: receivedData.date,
+    amount: receivedData.amount,
+    itemName: receivedData.itemName,
+    description: receivedData.description,
+    codeBalance: codeBalance
+  });
+
+  showToast('กำลังบันทึกข้อมูลรายจ่าย', 'warning');
+  fetch(webhookUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: payload
+  })
+    .then(() => {
+      console.log('Data sent successfully!');
+      showToast('ส่งข้อมูลรายรับเสร็จสิ้น', 'info');
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
+
+// Add close functionality for receiver alert
+document.querySelector("#receiver-alert i").addEventListener("click", () => {
+  document.getElementById("receiver-alert").classList.add("hidden");
+});
+
+// Add close functionality for amount alert
+document.querySelector("#amount-alert i").addEventListener("click", () => {
+  document.getElementById("amount-alert").classList.add("hidden");
+});
