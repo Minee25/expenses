@@ -17,6 +17,8 @@ document.querySelector("#price-alert i").addEventListener("click", () => {
 document.getElementById("submit").addEventListener("click", () => {
   if (!infoProduct.length <= 0) {
     send();
+  } else {
+    showToast('ไม่มีข้อมูลที่ต้องการส่ง', 'error');
   }
 });
 
@@ -296,6 +298,9 @@ function showToast(message, type = 'success') {
 // toggle
 
 let selected = localStorage.getItem('selected') === 'true';
+if (localStorage.getItem('selected') === null) {
+  selected = true; // ค่าเริ่มต้น 
+}
 
 // ค้นหาปุ่มที่ใช้เลือกแท็บ
 const expensesTab = document.getElementById('expensesTab');
@@ -367,6 +372,7 @@ document.getElementById("submit-receive").addEventListener("click", () => {
   const description = document.getElementById("description").value.trim();
 
   if (!validateForm(receiverName, amount)) {
+    showToast('ไม่มีข้อมูลที่ต้องการส่ง', 'error');
     return;
   }
 
