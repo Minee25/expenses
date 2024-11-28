@@ -18,24 +18,24 @@ function doPost(e) {
   var lock = LockService.getScriptLock();
   
   try {
-    // พยายามล็อกการทำงานเป็นเวลา 10 วินาที
+    // Try to acquire the lock for 10 seconds
     lock.tryLock(10000);
 
-    // ตรวจสอบว่ามีข้อมูล postData หรือไม่
+    // Check if postData is available
     if (!e.postData) {
       return createResponse({ error: "No postData found" });
     }
 
-    // แปลงข้อมูล JSON ที่ได้รับ
+    // Parse the incoming JSON data
     var data = JSON.parse(e.postData.contents);
     
-    // ดึงสเปรดชีตและชีตที่ใช้งานอยู่
+    // Get the active spreadsheet and sheet
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     
-    // หาบรรทัดถัดไปที่ว่าง เพื่อหลีกเลี่ยงการเขียนทับข้อมูลเดิม
+    // Get the next available row (to avoid overwriting)
     var lastRow = sheet.getLastRow() + 1;
 
-    // เพิ่มข้อมูลลงในคอลัมน์ที่เกี่ยวข้อง
+    // Insert the data into respective columns
     sheet.getRange(lastRow, 1).setValue(data.date);
     sheet.getRange(lastRow, 2).setValue(data.productName);
     sheet.getRange(lastRow, 3).setValue(data.priceProduct);
@@ -44,26 +44,26 @@ function doPost(e) {
     sheet.getRange(lastRow, 6).setValue(data.codeBalance);
     sheet.getRange(lastRow, 7).setValue(data.note ? data.note : data.description || "");
 
-    // ส่งคำตอบที่บ่งบอกว่าเสร็จสิ้น
+    // Return a success response
     return createResponse({ result: "success" });
 
   } catch (error) {
-    // หากเกิดข้อผิดพลาด ให้ตอบกลับข้อความผิดพลาด
+    // In case of error, return an error response
     return createResponse({ error: error.message });
 
   } finally {
-    // ปลดล็อกเมื่อเสร็จสิ้นการประมวลผล
+    // Release the lock after processing
     lock.releaseLock();
   }
 }
 
 function doGet(e) {
-  // จัดการคำขอ GET โดยส่งข้อความง่ายๆ
+  // Handle GET requests with a simple message
   return createResponse({ message: "GET request received." });
 }
 
 function doOptions(e) {
-  // จัดการคำขอ OPTIONS สำหรับ CORS headers
+  // Handle OPTIONS requests for CORS headers
   return ContentService.createTextOutput("")
     .setMimeType(ContentService.MimeType.JSON)
     .setHeader("Access-Control-Allow-Origin", "*")
@@ -72,7 +72,7 @@ function doOptions(e) {
 }
 
 function createResponse(responseData) {
-  // สร้างการตอบกลับในรูปแบบ JSON
+  // Create the JSON response to return
   var jsonResponse = JSON.stringify(responseData);
   return ContentService.createTextOutput(jsonResponse)
     .setMimeType(ContentService.MimeType.JSON)
